@@ -1,0 +1,22 @@
+version: "3"
+
+services:
+  elasticsearch:
+    image: "deepset/elasticsearch-countries-and-capitals"
+    ports:
+      - 9200:9200
+    restart: on-failure
+
+  haystack-api:
+    image: "deepset/haystack:cpu"
+    ports:
+      - 8000:8000
+    restart: on-failure
+    environment:
+      - DOCUMENTSTORE_PARAMS_HOST=elasticsearch
+      - PIPELINE_YAML_PATH=/opt/venv/lib/python3.10/site-packages/rest_api/pipeline/pipelines_dpr.haystack-pipeline.yml
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+
+ 
